@@ -4,7 +4,7 @@ const heroes = [
   { name: 'Hazard', img: 'images/hazard.png' },
   { name: 'Junkerqueen', img: 'images/jq.png' },
   { name: 'Mauga', img: 'images/mauga.png' },
-  { name: 'Orisa', img: 'images/Orisa.png' },
+  { name: 'Orisa', img: 'images/orisa.png' },
   { name: 'Ramattra', img: 'images/ram.png' },
   { name: 'Reinhardt', img: 'images/reinhardt.png' },
   { name: 'Roadhog', img: 'images/hog.png' },
