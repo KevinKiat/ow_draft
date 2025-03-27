@@ -49,8 +49,6 @@ const heroes = [
 const teamCount = 42;
 const slotCount = 5;
 
-const roles = ['Tank', 'FDPS', 'HS', 'FS', 'MS'];
-
 let draggedHero = null;
 let placingCooldown = false;
 
@@ -76,16 +74,8 @@ heroes.forEach(hero => {
   pool.appendChild(box);
 });
 
-// Create teams with "Team/Map" input above each
+// Create team grids
 for (let t = 0; t < teamCount; t++) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'team-wrapper';
-
-  const input = document.createElement('input');
-  input.className = 'team-label';
-  input.placeholder = 'Team/Map';
-  wrapper.appendChild(input);
-
   const grid = document.createElement('div');
   grid.className = 'grid';
 
@@ -94,7 +84,8 @@ for (let t = 0; t < teamCount; t++) {
     slot.className = 'slot';
 
     const applyHero = () => {
-      if (placingCooldown) return;
+      if (placingCooldown) return; // prevent double fire
+
       if (draggedHero) {
         slot.innerHTML = '';
         const img = document.createElement('img');
@@ -103,7 +94,7 @@ for (let t = 0; t < teamCount; t++) {
         slot.appendChild(img);
         draggedHero = null;
         placingCooldown = true;
-        setTimeout(() => placingCooldown = false, 100);
+        setTimeout(() => placingCooldown = false, 100); // short cooldown
       } else if (slot.children.length > 0) {
         slot.innerHTML = '';
       }
@@ -113,49 +104,5 @@ for (let t = 0; t < teamCount; t++) {
     grid.appendChild(slot);
   }
 
-  wrapper.appendChild(grid);
-  teamsContainer.appendChild(wrapper);
-}
-
-// ✅ Export teams that have at least one filled slot — works on Safari too
-function exportTeamsToClipboard() {
-  const allWrappers = document.querySelectorAll('.team-wrapper');
-  let exportText = '';
-
-  allWrappers.forEach((wrapper) => {
-    const slots = wrapper.querySelectorAll('.slot');
-    const filled = Array.from(slots).some(slot => slot.querySelector('img'));
-
-    if (!filled) return;
-
-    const label = wrapper.querySelector('.team-label')?.value.trim() || 'Team';
-    exportText += `🟦 ${label}\n`;
-
-    slots.forEach((slot, j) => {
-      const name = slot.querySelector('img')?.alt || '-';
-      exportText += `${roles[j]}: ${name}\n`;
-    });
-
-    exportText += '\n';
-  });
-
-  if (exportText.trim()) {
-    // Safari-safe fallback copy method
-    const textarea = document.createElement('textarea');
-    textarea.value = exportText;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'absolute';
-    textarea.style.left = '-9999px';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-      const success = document.execCommand('copy');
-      alert(success ? 'Copied to clipboard! ✅' : 'Copy failed 😢');
-    } catch (err) {
-      alert('Clipboard error in this browser 😓');
-    }
-    document.body.removeChild(textarea);
-  } else {
-    alert('No teams filled. Nothing to copy.');
-  }
+  teamsContainer.appendChild(grid);
 }

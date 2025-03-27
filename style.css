@@ -23,11 +23,11 @@ html, body {
 }
 
 body {
-  padding-top: 100px; /* ✅ Increased padding for fixed hero pool */
+  padding-top: 80px; /* Adjusted for smaller hero pool */
 }
 
 .hero {
-  width: 42px;
+  width: 42px;   /* was 60px */
   height: 42px;
   background: #f0f0f0;
   border: 1px solid #bbb;
@@ -45,31 +45,11 @@ body {
   pointer-events: none;
 }
 
-.team-wrapper {
-  padding: 10px;
-}
-
-.team-wrapper:first-child {
-  margin-top: 30px; /* ✅ Extra space under hero pool */
-}
-
-.team-label {
-  width: 100%;
-  max-width: 400px;
-  margin: 10px auto;
-  display: block;
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
   gap: 7px;
-  margin-bottom: 30px;
+  margin: 20px 0 30px;
   width: 100%;
   box-sizing: border-box;
   padding: 0 10px;
