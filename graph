@@ -1,0 +1,121 @@
+import pandas as pd
+import networkx as nx
+import plotly.graph_objects as go
+import dash
+from dash import dcc, html
+import math
+import numpy as np
+
+# Load the Excel file
+df = pd.read_excel('heroes.xlsx')
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Add nodes and edges from the DataFrame
+for index, row in df.iterrows():
+    hero = row[0]
+    counters = row[1:].dropna().tolist()
+    for counter in counters:
+        G.add_edge(hero, counter)
+
+# Function to create circular layout
+def circular_layout(G):
+    pos = {}
+    num_nodes = len(G.nodes())
+    for i, node in enumerate(G.nodes()):
+        angle = 2 * np.pi * i / num_nodes
+        pos[node] = (np.cos(angle), np.sin(angle))
+    return pos
+
+# Get initial circular positions
+pos = circular_layout(G)
+
+# Function to adjust the position of the arrowhead to point outward
+def get_arrowhead_position(x0, y0, x1, y1, node_radius):
+    dx = x1 - x0
+    dy = y1 - y0
+    angle = math.atan2(dy, dx)
+    x_adj = x1 - node_radius * math.cos(angle)
+    y_adj = y1 - node_radius * math.sin(angle)
+    return x_adj, y_adj
+
+# Define the node radius
+node_radius = 0.05
+
+# Create edges with arrows
+edge_trace = []
+for edge in G.edges():
+    x0, y0 = pos[edge[0]]
+    x1, y1 = pos[edge[1]]
+    arrow_x, arrow_y = get_arrowhead_position(x0, y0, x1, y1, node_radius)
+
+    edge_trace.append(
+        go.Scatter(
+            x=[x0, arrow_x],
+            y=[y0, arrow_y],
+            line=dict(width=2, color='blue'),
+            mode='lines',
+            hoverinfo='none'
+        )
+    )
+
+    edge_trace.append(
+        go.Scatter(
+            x=[arrow_x],
+            y=[arrow_y],
+            mode='markers',
+            marker=dict(size=10, color='blue', symbol='triangle-up'),
+            hoverinfo='none'
+        )
+    )
+
+# Create nodes with names inside
+node_trace = go.Scatter(
+    x=[],
+    y=[],
+    text=[],
+    mode='markers+text',
+    textposition="middle center",
+    hoverinfo='text',
+    marker=dict(
+        showscale=True,
+        colorscale='YlGnBu',
+        color=[],
+        size=40,  # Increased size for better visibility
+        colorbar=dict(
+            thickness=15,
+            title='Node Connections',
+            xanchor='left',
+            titleside='right'
+        ),
+        line_width=2
+    ))
+
+for node in G.nodes():
+    x, y = pos[node]
+    node_trace['x'] += (x,)
+    node_trace['y'] += (y,)
+    node_trace['text'] += (node,)
+    node_trace['marker']['color'] += (len(G[node]),)
+
+# Create figure
+fig = go.Figure(data=edge_trace + [node_trace],
+                layout=go.Layout(
+                    showlegend=False,
+                    hovermode='closest',
+                    margin=dict(b=20, l=5, r=5, t=40),
+                    xaxis=dict(showgrid=False, zeroline=False),
+                    yaxis=dict(showgrid=False, zeroline=False))
+                )
+
+# Create Dash app
+app = dash.Dash(__name__)
+
+# Set the layout
+app.layout = html.Div([
+    dcc.Graph(id='counterpick-graph', figure=fig)
+])
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
