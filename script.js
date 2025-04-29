@@ -16,6 +16,7 @@ const heroes = [
   { name: 'Bastion', img: 'images/bastion.png' },
   { name: 'Cassidy', img: 'images/cass.png' },
   { name: 'Echo', img: 'images/echo.png' },
+  { name: 'Freja', img: 'images/freja.png' },
   { name: 'Genji', img: 'images/genji.png' },
   { name: 'Hanzo', img: 'images/hanzo.png' },
   { name: 'Junkrat', img: 'images/junkrat.png' },
