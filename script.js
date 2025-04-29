@@ -11,6 +11,7 @@ const heroes = [
   { name: 'Sigma', img: 'images/sigma.png' },
   { name: 'Winston', img: 'images/winston.png' },
   { name: 'Wrecking Ball', img: 'images/ball.png' },
+  { name: 'Zarya', img: 'images/zarya.png' },
   { name: 'Ashe', img: 'images/ashe.png' },
   { name: 'Bastion', img: 'images/bastion.png' },
   { name: 'Cassidy', img: 'images/cass.png' },
